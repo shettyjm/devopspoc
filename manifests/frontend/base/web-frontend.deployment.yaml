@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: star-ai-web
+  name: star-ai-web
+  
+spec:
+  
+  replicas: 1
+  
+  selector:
+    matchLabels:
+      app: star-ai-web
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: star-ai-web
+    spec:
+      containers:
+      - image: gcr.io/google-containers/nginx:v1
+        imagePullPolicy: IfNotPresent
+        name: star-ai-web-container
+             
+        ports:
+        - containerPort: 3000
+       
+        volumeMounts:
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: kube-api-access-6wllk
+          readOnly: true
+      imagePullSecrets:
+      - name: gcr-json-key
+      volumes:
+      - name: kube-api-access-6wllk
+        projected:
+          defaultMode: 420
+          sources:
+          - serviceAccountToken:
+              expirationSeconds: 3607
+              path: token
+          - configMap:
+              items:
+              - key: ca.crt
+                path: ca.crt
+              name: kube-root-ca.crt
+          - downwardAPI:
+              items:
+              - fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+                path: namespace

@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: star-ai-web
+spec:
+  replicas: 1 # Update the replica count to 3
+  template:
+    spec:
+      containers:
+      - name: star-ai-web-container
+        resources:
+          limits:
+            cpu: 300m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi

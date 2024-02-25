@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base
+namespace: star-ai
+images:
+- name: gcr.io/google-containers/nginxsta
+  newTag: release1234
+patches:
+- path: dev-patch.yaml
